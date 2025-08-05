@@ -15,7 +15,7 @@ export default function Book() {
   return (
     <motion.div
       ref={ref}
-      className="bg-slate-100 h-[80vh] w-full flex justify-center items-center"
+      className="bg-slate-100 h-[65vh] w-full flex justify-center items-center"
     >
       <motion.div
         initial={{ opacity: 0, scale: 0.5 }}

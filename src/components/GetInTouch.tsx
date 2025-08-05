@@ -55,11 +55,10 @@ export default function GetInTouch() {
   };
 
   return (
-    <div className="relative -pb-8 ">
-
+    <div className="relative">
       {/* Success Partner Section */}
-      <div className="bg-black pt-25 pb-4 overflow-hidden w-full">
-        <div className="text-center mb-20">
+      <div className="bg-black xl:pt-16 pt-5 pb-4 overflow-hidden w-full">
+        <div className="text-center mb-12 md:mb-16">
           <h3 className="text-[30px] md:text-[56px] font-bold text-white whitespace-nowrap">
             <span className="">{t("app.successPartner.title")}{" "}</span>
             <span className="text-[#1AB8B3]">
@@ -103,32 +102,30 @@ export default function GetInTouch() {
         </div>
       </div>
 
-      {/* Stay in Touch Section */}
+      {/* Stay in Touch Section - REDUCED SPACING */}
       <div
         ref={ref}
-        className="bg-black min-h-screen flex flex-col items-center justify-center text-white relative overflow-hidden"
+        className="bg-black min-h-[80vh] flex flex-col items-center justify-center text-white relative overflow-hidden xl:py-16"
         id="getInTouch"
       >
         <motion.h2
           style={{ x: leftToCenter, opacity }}
-          // Added conditional line-height for mobile Arabic text
-          className={`absolute top-[23%] left-1/2 -translate-x-1/2 whitespace-nowrap md:text-[56px] text-[30px] ${isArabic ? 'leading-tight md:leading-normal' : ''}`}
+          className={`absolute top-[18%] left-1/2 -translate-x-1/2 whitespace-nowrap md:text-[56px] text-[30px] ${isArabic ? 'leading-tight md:leading-normal' : ''}`}
         >
           {t("app.community.title")}
         </motion.h2>
 
         <motion.h2
           style={{ x: rightToCenter, opacity }}
-          // Added conditional line-height for mobile Arabic text
-          className={`md:text-[56px] text-[30px] text-gradient-custom bg-clip-text text-transparent absolute top-[33%] left-1/2 -translate-x-1/2 whitespace-nowrap ${isArabic ? 'leading-tight md:leading-normal' : ''}`}
+          className={` md:text-[56px] text-[30px] text-gradient-custom bg-clip-text text-transparent absolute top-[28%] left-1/2 -translate-x-1/2 whitespace-nowrap ${isArabic ? 'leading-tight md:leading-normal' : ''}`}
         >
           {t("app.community.join")}
         </motion.h2>
 
-        <div className="pt-60 md:max-w-[768px] w-[70%] text-center">
+        {/* REDUCED PADDING FROM pt-60 to pt-28 */}
+        <div className="pt-28 md:pt-36 md:max-w-[768px] w-[70%] text-center">
           <p
-            // Added conditional line-height for mobile Arabic text
-            className={`text-gray-300 mb-6 text-[22px] ${isArabic ? 'leading-loose md:leading-normal' : ''}`}
+            className={`mt-16 text-gray-300 mb-6 text-[22px] ${isArabic ? 'leading-loose md:leading-normal' : ''}`}
           >
             {t("app.community.spam")}
           </p>

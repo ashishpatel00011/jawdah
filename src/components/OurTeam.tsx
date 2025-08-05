@@ -69,7 +69,7 @@ export default function TeamCarousel() {
   let sliderRef: any = null;
 
   return (
-    <section className="py-12 bg-gray-50 relative w-full min-h-100">
+    <section className="pt-5  bg-gray-50 relative w-full min-h-100">
       <div className="max-w-8xl mx-auto relative">
         {/* Header */}
         <div
