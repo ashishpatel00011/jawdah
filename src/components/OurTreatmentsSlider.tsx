@@ -1,9 +1,9 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef, TouchEvent } from "react";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 
-
+// Services and slides arrays remain unchanged...
 // Each service corresponds to an image in the stack (same order!)
 const services = [
   {
@@ -169,7 +169,7 @@ const slides = [
   },
   {
     category: "Dermatology Department",
-    arCategory: "قسم الجلدية", // Added Arabic translation
+    arCategory: "قسم الجلديةلبوتوكس ",// Added Arabic translation
     description: "Dermatology Department",
     src: "/treatments/9.png",
   },
@@ -181,13 +181,19 @@ const slides = [
   },
 ];
 
+
 export default function OurTreatmentsSlider() {
   const { i18n } = useTranslation();
   const isArabic = i18n.language === "ar";
   const [current, setCurrent] = useState(0);
-  const [isAutoScrolling, setIsAutoScrolling] = useState(true);
-  const autoScrollTimerRef = useRef<NodeJS.Timeout | null>(null);
 
+  // Touch swipe variables
+  const touchStartX = useRef<number | null>(null);
+  const touchEndX = useRef<number | null>(null);
+  const minSwipeDistance = 50;
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragOffset, setDragOffset] = useState(0);
+  const [, setDirection] = useState(0); // -1: left swipe, 1: right swipe
 
   // This function is used by your image stack logic
   const getPosition = (index: number) => {
@@ -200,40 +206,70 @@ export default function OurTreatmentsSlider() {
     return null;
   };
 
-  const next = () => setCurrent((prev) => (prev + 1) % slides.length);
-  const prev = () => setCurrent((prev) => (prev - 1 + slides.length) % slides.length);
-  const goToSlide = (index: number) => setCurrent(index);
-  useEffect(() => {
-    const handleAutoScroll = () => {
-      // Only auto-scroll on small screens
-      if (window.innerWidth < 768 && isAutoScrolling) {
-        autoScrollTimerRef.current = setTimeout(() => {
-          next();
-        }, 3000); // Change slide every 3 seconds
-      }
-    };
-    handleAutoScroll();
-    return () => {
-      if (autoScrollTimerRef.current) {
-        clearTimeout(autoScrollTimerRef.current);
-      }
-    };
-  }, [current, isAutoScrolling]);
-
-  // Pause auto-scrolling on user interaction
-  const pauseAutoScroll = () => {
-    setIsAutoScrolling(false);
-    // Resume after 10 seconds of inactivity
-    setTimeout(() => setIsAutoScrolling(true), 10000);
+  const next = () => {
+    setDirection(-1);
+    setCurrent((prev) => (prev + 1) % slides.length);
   };
+
+  const prev = () => {
+    setDirection(1);
+    setCurrent((prev) => (prev - 1 + slides.length) % slides.length);
+  };
+
+  const goToSlide = (index: number) => {
+    setDirection(index > current ? -1 : 1);
+    setCurrent(index);
+  };
+
+  // Touch event handlers - FIXED
+  const handleTouchStart = (e: TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchEndX.current = e.touches[0].clientX;
+    setIsDragging(true);
+    setDragOffset(0);
+  };
+
+  const handleTouchMove = (e: TouchEvent) => {
+    if (!touchStartX.current) return;
+
+    touchEndX.current = e.touches[0].clientX;
+    const currentOffset = touchEndX.current - touchStartX.current;
+    setDragOffset(currentOffset);
+  };
+
+  const handleTouchEnd = () => {
+    setIsDragging(false);
+
+    if (!touchStartX.current || !touchEndX.current) return;
+
+    const distance = touchStartX.current - touchEndX.current;
+
+    // Reset dragOffset before navigating
+    setDragOffset(0);
+
+    if (distance > minSwipeDistance) {
+      // Left swipe (start point is greater than end point)
+      setDirection(-1);
+      setCurrent((prev) => (prev + 1) % slides.length);
+    } else if (distance < -minSwipeDistance) {
+      // Right swipe (end point is greater than start point)
+      setDirection(1);
+      setCurrent((prev) => (prev - 1 + slides.length) % slides.length);
+    }
+
+    // Reset touch values
+    touchStartX.current = null;
+    touchEndX.current = null;
+  };
+
   return (
     <div
       className={`min-h-[115vh] bg-black flex items-center justify-center px-6 md:px-20 overflow-hidden`}
-      onClick={pauseAutoScroll} // Pause auto-scroll on any interaction
     >
       <div className={`container grid grid-cols-1 md:grid-cols-2 gap-2 xl:gap-16 items-center ${isArabic ? "text-right" : "text-left"}`}>
-        {/* Left: Show only ONE service at a time, in sync with current */}
+        {/* Left: Content area - unchanged */}
         <div className="flex flex-col justify-center h-full py-8 space-y-8">
+          {/* Content unchanged */}
           <h4 className="text-[#1ab8b3] text-[39px] mb-4 font-medium">
             {isArabic ? "خدماتنا" : "Our Treatments"}
           </h4>
@@ -245,14 +281,14 @@ export default function OurTreatmentsSlider() {
           </p>
           <div className={`hidden md:flex gap-6 pt-10 justify-center ${isArabic ? "flex-row-reverse" : ""} md:justify-start ${isArabic ? "md:ml-90" : ""}`}>
             <button
-              onClick={() => { prev(); pauseAutoScroll(); }}
+              onClick={prev}
               className="p-4 text-3xl border bg-slate-50/10 text-white rounded-full hover:bg-slate-50/20"
               aria-label={isArabic ? "السابق" : "Previous"}
             >
               <MdKeyboardArrowLeft />
             </button>
             <button
-              onClick={() => { next(); pauseAutoScroll(); }}
+              onClick={next}
               className="p-4 text-3xl border bg-slate-50/10 text-white rounded-full hover:bg-slate-50/20"
               aria-label={isArabic ? "التالي" : "Next"}
             >
@@ -263,7 +299,7 @@ export default function OurTreatmentsSlider() {
             {slides.map((_, index) => (
               <button
                 key={index}
-                onClick={() => { goToSlide(index); pauseAutoScroll(); }}
+                onClick={() => goToSlide(index)}
                 className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${current === index
                   ? "bg-[#1ab8b3] w-4" // Active dot
                   : "bg-white/50"       // Inactive dot
@@ -274,8 +310,13 @@ export default function OurTreatmentsSlider() {
           </div>
         </div>
 
-        {/* Right: IMAGE STACK - UNCHANGED! */}
-        <div className="relative w-full max-w-md h-[520px] mx-auto">
+        {/* Right: IMAGE STACK with touch support */}
+        <div
+          className="relative w-full max-w-md h-[520px] mx-auto"
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
           {slides.map((slide, index) => {
             const pos = getPosition(index);
             if (pos === null) return null;
@@ -292,8 +333,13 @@ export default function OurTreatmentsSlider() {
                 className="absolute inset-0"
                 style={{ zIndex }}
                 initial={false}
-                animate={{ x: offsetX, scale, opacity, rotate }}
-                transition={{ duration: 0.5, ease: "linear" }}
+                animate={{
+                  x: isDragging && pos === 0 ? dragOffset : offsetX,
+                  scale,
+                  opacity,
+                  rotate
+                }}
+                transition={{ duration: isDragging ? 0 : 0.5, ease: "linear" }}
               >
                 <img
                   src={slide.src}
@@ -311,6 +357,15 @@ export default function OurTreatmentsSlider() {
               </motion.div>
             );
           })}
+
+          {/* Visual swipe hint overlay - improved for clarity */}
+          {isDragging && Math.abs(dragOffset) > 20 && (
+            <div className="absolute inset-0 pointer-events-none z-20 flex items-center justify-center">
+              <div className={`text-white text-5xl bg-black/30 rounded-full p-3 transition-opacity ${Math.abs(dragOffset) > 40 ? 'opacity-80' : 'opacity-40'}`}>
+                {dragOffset > 0 ? <MdKeyboardArrowLeft /> : <MdKeyboardArrowRight />}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
