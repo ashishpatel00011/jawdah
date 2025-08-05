@@ -234,13 +234,13 @@ export default function OurTreatmentsSlider() {
       <div className={`container grid grid-cols-1 md:grid-cols-2 gap-2 xl:gap-16 items-center ${isArabic ? "text-right" : "text-left"}`}>
         {/* Left: Show only ONE service at a time, in sync with current */}
         <div className="flex flex-col justify-center h-full py-8 space-y-8">
-          <h4 className="text-[#1ab8b3] text-[29px] mb-4 font-medium">
+          <h4 className="text-[#1ab8b3] text-[39px] mb-4 font-medium">
             {isArabic ? "خدماتنا" : "Our Treatments"}
           </h4>
-          <h3 className="text-white sm:text-[24px] md:text-[38px] font-bold tracking-wide drop-shadow-lg">
+          <h3 className="text-white sm:text-[34px] md:text-[38px] font-bold tracking-wide drop-shadow-lg">
             {isArabic ? services[current].title.ar : services[current].title.en}
           </h3>
-          <p className="text-white/80 md:text-[20px] mt-4 leading-relaxed" dir={isArabic ? "rtl" : "ltr"}>
+          <p className="text-white/80 md:text-[30px] mt-4 leading-relaxed" dir={isArabic ? "rtl" : "ltr"}>
             {isArabic ? services[current].desc.ar : services[current].desc.en}
           </p>
           <div className={`hidden md:flex gap-6 pt-10 justify-center ${isArabic ? "flex-row-reverse" : ""} md:justify-start ${isArabic ? "md:ml-90" : ""}`}>

@@ -32,7 +32,7 @@ export default function Testimonials() {
             <h3 className="mt-5 text-white text-[46px] font-bold">
               {t("testimonials.title")}
             </h3>
-            <p className="mt-4 text-white/80 para20 text-shadow-md mb-8 leading-relaxed md:leading-normal">
+            <p className=" text-white/80 para20 text-shadow-md mb-8 leading-relaxed md:leading-normal text-[46px] ">
               {t("testimonials.subtitle")}
             </p>
  

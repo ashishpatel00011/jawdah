@@ -219,7 +219,7 @@ const Discover: React.FC = () => {
   const isArabic = i18n.language === "ar";
   const [activeLocation, setActiveLocation] = useState<LocationKey>("JuffaliBranchMakkah");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [, setIsMobile] = useState(window.innerWidth < 768);
 
   useEffect(() => {
     const handleResize = () => {

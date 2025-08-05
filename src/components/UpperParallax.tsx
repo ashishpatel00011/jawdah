@@ -1,4 +1,4 @@
-import { useState, useRef, TouchEvent, useEffect } from "react";
+import { useState, useRef, TouchEvent } from "react";
 import Button from "./Button";
 import { useTranslation } from "react-i18next";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
